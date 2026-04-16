@@ -51,3 +51,43 @@ if(modal){
   modal.addEventListener('click', e=>{ if(e.target===modal){ modal.classList.remove('open'); document.body.style.overflow=''; }});
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.classList.contains('open')){ modal.classList.remove('open'); document.body.style.overflow=''; }});
+
+
+function applyScrollParallax(){
+  if (window.innerWidth <= 780) return;
+  const scrollY = window.scrollY || window.pageYOffset;
+
+  const right = document.querySelector('.parallax-right');
+  const left = document.querySelector('.parallax-left');
+
+  if (right){
+    const y = Math.max(-120, scrollY * -0.10);
+    right.style.transform = `translateY(${y}px)`;
+  }
+  if (left){
+    const y = Math.max(-28, scrollY * -0.03);
+    left.style.transform = `translateY(${y}px)`;
+  }
+
+  document.querySelectorAll('[data-scroll-speed]').forEach((el)=>{
+    const speed = parseFloat(el.getAttribute('data-scroll-speed') || '0');
+    const rect = el.getBoundingClientRect();
+    const elementTop = rect.top + scrollY;
+    const delta = (scrollY - elementTop) * speed;
+    el.style.transform = `translateY(${delta}px)`;
+  });
+}
+
+let parallaxTicking = false;
+function onParallaxScroll(){
+  if (!parallaxTicking){
+    window.requestAnimationFrame(()=>{
+      applyScrollParallax();
+      parallaxTicking = false;
+    });
+    parallaxTicking = true;
+  }
+}
+window.addEventListener('scroll', onParallaxScroll, { passive:true });
+window.addEventListener('resize', onParallaxScroll);
+window.addEventListener('load', applyScrollParallax);

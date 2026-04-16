@@ -116,3 +116,23 @@ textarea{min-height:120px;resize:vertical}.input::placeholder,textarea::placehol
 .modal-close{position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:14px;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:20px}
 @media (max-width:1100px){.hero-grid,.pack-layout,.story-grid,.card-grid,.cta-form,.footer-grid,.modal{grid-template-columns:1fr 1fr}.section-head{flex-direction:column;align-items:start}}
 @media (max-width:780px){.wrap{width:min(var(--max), calc(100% - 20px))}.links,.actions{display:none}.hero-grid,.hero-micro,.pack-layout,.story-grid,.card-grid,.cta-form,.footer-grid,.modal{grid-template-columns:1fr}.hero-copy{padding:26px}.hero h1{max-width:11ch}.hero-label{position:static;max-width:none;margin:14px}.hero-visual img{min-height:360px}.modal-side,.modal-form{padding:26px}}
+
+
+/* Parallax vertical por coluna e blocos */
+.parallax-left,
+.parallax-right,
+[data-scroll-speed]{
+  will-change: transform;
+  transition: transform .08s linear;
+}
+.hero-grid{
+  align-items:start;
+}
+@media (max-width: 780px){
+  .parallax-left,
+  .parallax-right,
+  [data-scroll-speed]{
+    transform:none !important;
+    transition:none !important;
+  }
+}
