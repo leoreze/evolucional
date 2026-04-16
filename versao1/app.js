@@ -53,41 +53,55 @@ if(modal){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.classList.contains('open')){ modal.classList.remove('open'); document.body.style.overflow=''; }});
 
 
-function applyScrollParallax(){
-  if (window.innerWidth <= 780) return;
-  const scrollY = window.scrollY || window.pageYOffset;
 
-  const right = document.querySelector('.parallax-right');
-  const left = document.querySelector('.parallax-left');
 
-  if (right){
-    const y = Math.max(-120, scrollY * -0.10);
-    right.style.transform = `translateY(${y}px)`;
+function initHeroBannerRotator(){
+  const slides = Array.from(document.querySelectorAll('[data-hero-slide]'));
+  const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
+  const prev = document.querySelector('.hero-banner-prev');
+  const next = document.querySelector('.hero-banner-next');
+  if (!slides.length || !prev || !next) return;
+
+  let current = slides.findIndex(s => s.classList.contains('active'));
+  if (current < 0) current = 0;
+
+  function showHeroSlide(index){
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
   }
-  if (left){
-    const y = Math.max(-28, scrollY * -0.03);
-    left.style.transform = `translateY(${y}px)`;
-  }
 
-  document.querySelectorAll('[data-scroll-speed]').forEach((el)=>{
-    const speed = parseFloat(el.getAttribute('data-scroll-speed') || '0');
-    const rect = el.getBoundingClientRect();
-    const elementTop = rect.top + scrollY;
-    const delta = (scrollY - elementTop) * speed;
-    el.style.transform = `translateY(${delta}px)`;
-  });
+  prev.addEventListener('click', () => showHeroSlide(current - 1));
+  next.addEventListener('click', () => showHeroSlide(current + 1));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => showHeroSlide(i)));
 }
+window.addEventListener('load', initHeroBannerRotator);
 
-let parallaxTicking = false;
-function onParallaxScroll(){
-  if (!parallaxTicking){
-    window.requestAnimationFrame(()=>{
-      applyScrollParallax();
-      parallaxTicking = false;
-    });
-    parallaxTicking = true;
+
+
+
+/* Hero banner com transição sutil */
+(function(){
+  const slides = Array.from(document.querySelectorAll('[data-hero-slide]'));
+  const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
+  const prev = document.querySelector('.hero-banner-prev');
+  const next = document.querySelector('.hero-banner-next');
+  if (!slides.length || !prev || !next) return;
+
+  let current = slides.findIndex(s => s.classList.contains('active'));
+  if (current < 0) current = 0;
+  let animating = false;
+
+  function syncHero(idx){
+    if (animating) return;
+    animating = true;
+    current = (idx + slides.length) % slides.length;
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    setTimeout(()=>{ animating = false; }, 520);
   }
-}
-window.addEventListener('scroll', onParallaxScroll, { passive:true });
-window.addEventListener('resize', onParallaxScroll);
-window.addEventListener('load', applyScrollParallax);
+
+  prev.addEventListener('click', () => syncHero(current - 1));
+  next.addEventListener('click', () => syncHero(current + 1));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => syncHero(i)));
+})();

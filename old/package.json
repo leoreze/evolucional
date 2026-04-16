@@ -1,0 +1,16 @@
+{
+  "name": "evolucional-duas-versoes-render",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Duas versões do site da Evolucional servidas em /versao1 e /versao2",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
